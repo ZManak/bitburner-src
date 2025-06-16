@@ -26,7 +26,7 @@ export type PageContext<T extends Page> = T extends ComplexPage.BitVerse
   ? { saveData: SaveData; automatic?: boolean }
   : T extends ComplexPage.Documentation
   ? { docPage?: string }
-  : never;
+  : never
 
 export type PageWithContext =
   | ({ page: ComplexPage.BitVerse } & PageContext<ComplexPage.BitVerse>)

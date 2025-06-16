@@ -8,7 +8,9 @@ async function getSave(file) {
 
   let jsonSaveString;
   if (isBinaryFormat(data)) {
-    const decompressedReadableStream = new Blob([data]).stream().pipeThrough(new DecompressionStream("gzip"));
+    const decompressedReadableStream = new Blob([data])
+      .stream()
+      .pipeThrough(new DecompressionStream("gzip"));
     jsonSaveString = await new Response(decompressedReadableStream).text();
   } else {
     jsonSaveString = decodeURIComponent(escape(atob(data)));
@@ -27,7 +29,9 @@ async function getSave(file) {
     VersionSave: JSON.parse(saveData.VersionSave),
     LastExportBonus: JSON.parse(saveData.LastExportBonus),
     StaneksGiftSave: JSON.parse(saveData.StaneksGiftSave),
-    SaveTimestamp: new Date(parseInt(saveData.SaveTimestamp ?? "0", 10)).toLocaleString(),
+    SaveTimestamp: new Date(
+      parseInt(saveData.SaveTimestamp ?? "0", 10)
+    ).toLocaleString(),
   };
 
   const serverStrings = JSON.parse(saveData.AllServersSave);

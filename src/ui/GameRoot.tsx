@@ -79,6 +79,7 @@ import { isBitNodeFinished } from "../BitNode/BitNodeUtils";
 import { exceptionAlert } from "../utils/helpers/exceptionAlert";
 import { SpecialServers } from "../Server/data/SpecialServers";
 import { DocumentationPopUp } from "../Documentation/ui/DocumentationPopUp";
+import RadioPage from "./RadioPage";
 
 const htmlLocation = location;
 
@@ -187,6 +188,7 @@ export function GameRoot(): React.ReactElement {
     Page.BitVerse,
     Page.Infiltration,
     Page.BladeburnerCinematic,
+    Page.Radio,
   ]);
 
   Router = {
@@ -438,6 +440,7 @@ export function GameRoot(): React.ReactElement {
               ) : (
                 <Box className={classes.root}>{mainPage}</Box>
               )}
+              <RadioPage isHidden title="Radio Player" />
               <Unclickable />
               <LogBoxManager hidden={hidePopups} />
               <AlertManager hidden={hidePopups} />

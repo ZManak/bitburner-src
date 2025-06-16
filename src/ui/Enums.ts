@@ -39,6 +39,7 @@ export enum SimplePage {
   Recovery = "Recovery",
   Achievements = "Achievements",
   ThemeBrowser = "Theme Browser",
+  
 }
 
 export enum ComplexPage {
@@ -50,5 +51,6 @@ export enum ComplexPage {
   Location = "Location",
   ImportSave = "Import Save",
   Documentation = "Documentation",
-  LoadingScreen = "Loading Screen", // Has no PageContext, and thus toPage() cannot be used
+  LoadingScreen = "Loading Screen",
+  Radio = "Radio Player", // Has no PageContext, and thus toPage() cannot be used
 }

@@ -38,7 +38,8 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox"; // Character
 import PublicIcon from "@mui/icons-material/Public"; // World
 import LiveHelpIcon from "@mui/icons-material/LiveHelp"; // Help
 import BorderInnerSharpIcon from "@mui/icons-material/BorderInnerSharp"; // IPvGO
-import BiotechIcon from "@mui/icons-material/Biotech"; // Grafting
+import BiotechIcon from "@mui/icons-material/Biotech";
+import MusicIcon from "@mui/icons-material/MusicNoteSharp"; //Radio
 
 import { Router } from "../../ui/GameRoot";
 import { ComplexPage, SimplePage } from "../../ui/Enums";
@@ -118,7 +119,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   listitem: {},
 }));
 
-export function SidebarRoot(props: { page: Page }): React.ReactElement {
+export function SidebarRoot(props: { page: Page | SimplePage | ComplexPage }): React.ReactElement {
   const isSettingUpKeyBindings = useRef(false);
   useCycleRerender();
 
@@ -304,6 +305,34 @@ export function SidebarRoot(props: { page: Page }): React.ReactElement {
   const li_classes = useMemo(() => ({ root: classes.listitem }), [classes.listitem]);
   const ChevronOpenClose = open ? ChevronLeftIcon : ChevronRightIcon;
 
+  //on click make page style visible
+  const handlePageClick = (page: SimplePage) => {
+    // Logic to make the page visible
+    (document.getElementById(page) as HTMLDivElement).setAttribute("visibility", "block");
+  };
+
+  // Add the onClick handler to the SidebarAccordion items
+  const pagesWithClickHandler = Page.Radio;
+
+  const items = [
+    { key_: Page.Terminal, icon: LastPageIcon },
+    { key_: Page.ScriptEditor, icon: CreateIcon },
+    { key_: Page.ActiveScripts, icon: StorageIcon },
+    { key_: Page.CreateProgram, icon: BugReportIcon, count: programCount },
+    canStaneksGift && { key_: Page.StaneksGift, icon: DeveloperBoardIcon },
+  ];
+
+  <SidebarAccordion
+    items={items}
+    key_="Hacking"
+    page={props.page}
+    clickPage={clickPage}
+    flash={flash}
+    icon={ComputerIcon}
+    sidebarOpen={open}
+    classes={classes}
+  />;
+
   // Explicitily useMemo() to save rerendering deep chunks of this tree.
   // memo() can't be (easily) used on components like <List>, because the
   // props.children array will be a different object every time.
@@ -375,7 +404,7 @@ export function SidebarRoot(props: { page: Page }): React.ReactElement {
         <SidebarAccordion
           key_="World"
           page={props.page}
-          clickPage={clickPage}
+          clickPage={clickPage || handlePageClick}
           flash={flash}
           icon={PublicIcon}
           sidebarOpen={open}
@@ -387,6 +416,7 @@ export function SidebarRoot(props: { page: Page }): React.ReactElement {
               active: [Page.City, Page.Location].includes(props.page),
             },
             { key_: Page.Travel, icon: AirplanemodeActiveIcon },
+            { key_: Page.Radio, icon: MusicIcon, active: pagesWithClickHandler.includes(props.page) },
             canJob && { key_: Page.Job, icon: WorkIcon },
             canStockMarket && { key_: Page.StockMarket, icon: TrendingUpIcon },
             canBladeburner && { key_: Page.Bladeburner, icon: FormatBoldIcon },

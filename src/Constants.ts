@@ -4,7 +4,7 @@
  * Constants for specific mechanics or features will NOT be here.
  */
 export const CONSTANTS = {
-  VersionString: "3.0.0dev",
+  VersionString: "3.0.0",
   isDevBranch: true,
   VersionNumber: 43,
 

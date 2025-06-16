@@ -6,11 +6,15 @@ const menu = require("./menu");
 const path = require("path");
 const { windowTracker } = require("./windowTracker");
 
-const debug = process.argv.includes("--debug");
+const isDev = require("electron-is-dev");
 
 async function createWindow(killall) {
   const setStopProcessHandler = global.app_handlers.stopProcess;
   app.setAppUserModelId("Bitburner");
+
+  if (dev) {
+    require("electron-debug")({ showDevTools: true });
+  }
 
   let icon;
   if (process.platform == "linux") {
@@ -46,14 +50,15 @@ async function createWindow(killall) {
     utils.setZoomFactor(window, utils.getZoomFactor());
   });
   window.show();
-  if (debug) window.webContents.openDevTools();
+  if (dev) window.webContents.openDevTools();
 
   window.webContents.setWindowOpenHandler(({ url }) => {
     // File protocol is allowed because it will use the file protocol intercept from main.js
     if (url.startsWith("file://")) return { action: "allow" };
     // Only http and https requests will be forwarded to browser.
     // By using shell.openExternal and returning action: "deny"
-    if (url.startsWith("http://") || url.startsWith("https://")) shell.openExternal(url);
+    if (url.startsWith("http://") || url.startsWith("https://"))
+      shell.openExternal(url);
     return { action: "deny" };
   });
 

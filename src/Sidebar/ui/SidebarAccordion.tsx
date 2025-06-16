@@ -50,8 +50,8 @@ export function SidebarAccordion({
   classes,
   icon: Icon,
   sidebarOpen,
-  key_,
   items,
+  key_,
   page,
   clickPage,
   flash,
@@ -66,7 +66,7 @@ export function SidebarAccordion({
     <>
       {useMemo(
         () => (
-          <ListItem classes={li_classes} button onClick={() => setOpen((open) => !open)}>
+          <ListItem classes={li_classes} onClick={() => setOpen((open) => !open)}>
             <ListItemIcon>
               <Tooltip title={!sidebarOpen ? key_ : ""}>
                 <Icon color={"primary"} />
@@ -93,6 +93,7 @@ export function SidebarAccordion({
               flash={flash === key_}
               classes={classes}
               sidebarOpen={sidebarOpen}
+              visible={true} // Always visible in an accordion
             />
           );
         })}

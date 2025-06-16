@@ -20,6 +20,7 @@ export interface SidebarItemProps extends ICreateProps {
   flash: boolean;
   classes: Record<"listitem" | "active", string>;
   sidebarOpen: boolean;
+  visible: boolean;
 }
 
 export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps): React.ReactElement {
@@ -27,7 +28,6 @@ export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps): R
   return (
     <ListItem
       classes={{ root: props.classes.listitem }}
-      button
       key={props.key_}
       className={props.active ? props.classes.active : ""}
       onClick={props.clickFn}
