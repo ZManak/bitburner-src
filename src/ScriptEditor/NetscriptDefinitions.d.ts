@@ -76,7 +76,7 @@ interface ResetInfo {
    * BitNode options into account.
    *
    * For example, let's say you have SF 1.3, but you overrode the active level of SF1 and set it to level 1. In this
-   * case, this map contains this entry: Key: 1 => Value: 1.
+   * case, this map contains this entry: Key: 1 &gt; Value: 1.
    *
    * If the active level of a source file is 0, that source file won't be included in the result.
    */

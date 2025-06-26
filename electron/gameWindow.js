@@ -57,8 +57,7 @@ async function createWindow(killall) {
     if (url.startsWith("file://")) return { action: "allow" };
     // Only http and https requests will be forwarded to browser.
     // By using shell.openExternal and returning action: "deny"
-    if (url.startsWith("http://") || url.startsWith("https://"))
-      shell.openExternal(url);
+    if (url.startsWith("http://") || url.startsWith("https://")) shell.openExternal(url);
     return { action: "deny" };
   });
 

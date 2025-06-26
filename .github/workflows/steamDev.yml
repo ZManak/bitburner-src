@@ -1,3 +1,7 @@
+env:
+  NODE_ENV: development
+  STEAM_BUILD_USERNAME: ${{ secrets.STEAM_BUILD_USERNAME }}
+  STEAM_BUILD_PASSWORD: ${{secrets.STEAM_BUILD_PASSWORD }}
 # update the steam development version
 name: "Steam dev update"
 
@@ -12,18 +16,21 @@ jobs:
         uses: CyberAndrii/setup-steamcmd@v1
 
       - name: Checkout dev branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           ref: dev
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 16
 
       - name: Build and deploy
         run: |
           npm ci
           npm run build
           npm run electron
-          steamcmd +login ${{ secrets.STEAM_BUILD_USERNAME }} ${{ secrets.STEAM_BUILD_PASSWORD }} +run_app_build ../tools/steamdev.vdf +quit
+          const userName = STEAM_BUILD_USERNAME
+          const password = STEAM_BUILD_PASSWORD
+          const steamcmd = 'steamcmd +login ' + userName + ' ' + password + ' +run_app_build ../tools/steamdev.vdf +quit'
+          require('child_process').execSync(steamcmd, { stdio: 'inherit' })
