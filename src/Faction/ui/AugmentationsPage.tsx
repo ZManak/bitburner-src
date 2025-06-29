@@ -1,30 +1,54 @@
 import React, { useState, useMemo } from "react";
-import { Box, Button, Typography, Paper, Container, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Paper,
+  Container,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { Augmentations } from "../../Augmentation/Augmentations";
-import { getAugCost, getGenericAugmentationPriceMultiplier } from "../../Augmentation/AugmentationHelpers";
+import {
+  getAugCost,
+  getGenericAugmentationPriceMultiplier,
+} from "../../Augmentation/AugmentationHelpers";
 import { AugmentationName, FactionName } from "@enums";
 import { PurchasableAugmentations } from "../../Augmentation/ui/PurchasableAugmentations";
 import { PurchaseAugmentationsOrderSetting } from "../../Settings/SettingEnums";
 import { Settings } from "../../Settings/Settings";
+import { MathJax } from "better-react-mathjax"; // Import MathJax component
 import { Player } from "@player";
 import { formatBigNumber } from "../../ui/formatNumber";
 import { Favor } from "../../ui/React/Favor";
 import { Reputation } from "../../ui/React/Reputation";
 import { Router } from "../../ui/GameRoot";
 import { Faction } from "../Faction";
-import { getFactionAugmentationsFiltered, hasAugmentationPrereqs, purchaseAugmentation } from "../FactionHelpers";
+import {
+  getFactionAugmentationsFiltered,
+  hasAugmentationPrereqs,
+  purchaseAugmentation,
+} from "../FactionHelpers";
 import { CONSTANTS } from "../../Constants";
 import { useRerender } from "../../ui/React/hooks";
+import { addRepToFavor } from "../formulas/favor";
 
 /** Root React Component for displaying a faction's "Purchase Augmentations" page */
-export function AugmentationsPage({ faction }: { faction: Faction }): React.ReactElement {
+export function AugmentationsPage({
+  faction,
+}: {
+  faction: Faction;
+}): React.ReactElement {
   const rerender = useRerender(400);
   const [filterText, setFilterText] = useState("");
 
-  const matches = (s1: string, s2: string) => s1.toLowerCase().includes(s2.toLowerCase());
-  const factionAugs = useMemo(() => getFactionAugmentationsFiltered(faction), [faction]);
+  const matches = (s1: string, s2: string) =>
+    s1.toLowerCase().includes(s2.toLowerCase());
+  const factionAugs = useMemo(() => getFactionAugmentationsFiltered(faction), [
+    faction,
+  ]);
   const filteredFactionAugs = useMemo(
     () =>
       factionAugs.filter(
@@ -32,9 +56,9 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
           !filterText ||
           matches(Augmentations[aug].name, filterText) ||
           matches(Augmentations[aug].info, filterText) ||
-          matches(Augmentations[aug].stats, filterText),
+          matches(Augmentations[aug].stats, filterText)
       ),
-    [filterText, factionAugs],
+    [filterText, factionAugs]
   );
 
   function getAugs(): AugmentationName[] {
@@ -80,7 +104,8 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
       const repCost = augCosts.repCost;
       const hasReq = faction.playerReputation >= repCost;
       const hasRep = hasAugmentationPrereqs(aug);
-      const hasCost = augCosts.moneyCost !== 0 && Player.money >= augCosts.moneyCost;
+      const hasCost =
+        augCosts.moneyCost !== 0 && Player.money >= augCosts.moneyCost;
       return hasCost && hasReq && hasRep;
     }
     const buy = augs.filter(canBuy).sort((augName1, augName2) => {
@@ -129,7 +154,9 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
     rerender();
   }
 
-  function handleFilterChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleFilterChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
     setFilterText(event.target.value);
   }
 
@@ -137,7 +164,8 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
   const purchasable = augs.filter(
     (aug: string) =>
       aug === AugmentationName.NeuroFluxGovernor ||
-      (!Player.augmentations.some((a) => a.name === aug) && !Player.queuedAugmentations.some((a) => a.name === aug)),
+      (!Player.augmentations.some((a) => a.name === aug) &&
+        !Player.queuedAugmentations.some((a) => a.name === aug))
   );
   const owned = augs.filter((aug) => !purchasable.includes(aug));
 
@@ -146,19 +174,22 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
   if (faction.name !== FactionName.ShadowsOfAnarchy) {
     multiplierDescription = (
       <Typography>
-        The price of every Augmentation increases for every queued Augmentation and it is reset when you install them.
+        The price of every Augmentation increases for every queued Augmentation
+        and it is reset when you install them.
       </Typography>
     );
     multiplierComponent = (
       <Typography>
-        <b>Price multiplier:</b> x {formatBigNumber(getGenericAugmentationPriceMultiplier())}
+        <b>Price multiplier:</b> x{" "}
+        {formatBigNumber(getGenericAugmentationPriceMultiplier())}
       </Typography>
     );
   } else {
     multiplierDescription = (
       <Typography>
-        This price multiplier increases for each {FactionName.ShadowsOfAnarchy} augmentation already purchased. The
-        multiplier is NOT reset when installing augmentations.
+        This price multiplier increases for each {FactionName.ShadowsOfAnarchy}{" "}
+        augmentation already purchased. The multiplier is NOT reset when
+        installing augmentations.
       </Typography>
     );
     multiplierComponent = (
@@ -167,16 +198,20 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
         {formatBigNumber(
           Math.pow(
             CONSTANTS.SoACostMult,
-            augs.filter((augmentationName) => Player.hasAugmentation(augmentationName)).length,
-          ),
+            augs.filter((augmentationName) =>
+              Player.hasAugmentation(augmentationName)
+            ).length
+          )
         )}
         <br />
         <b>Reputation multiplier:</b> x{" "}
         {formatBigNumber(
           Math.pow(
             CONSTANTS.SoARepMult,
-            augs.filter((augmentationName) => Player.hasAugmentation(augmentationName)).length,
-          ),
+            augs.filter((augmentationName) =>
+              Player.hasAugmentation(augmentationName)
+            ).length
+          )
         )}
       </Typography>
     );
@@ -186,38 +221,89 @@ export function AugmentationsPage({ faction }: { faction: Faction }): React.Reac
     <>
       <Container disableGutters maxWidth="lg" sx={{ mx: 0 }}>
         <Button onClick={() => Router.back()}>Back</Button>
-        <Typography variant="h4">Faction Augmentations - {faction.name}</Typography>
+        <Typography variant="h4">
+          Faction Augmentations - {faction.name}
+        </Typography>
         <Paper sx={{ p: 1, mb: 1 }}>
           <Typography>
-            These are all of the Augmentations that are available to purchase from <b>{faction.name}</b>. Augmentations
-            are powerful upgrades that will enhance your abilities.
+            These are all of the Augmentations that are available to purchase
+            from <b>{faction.name}</b>. Augmentations are powerful upgrades that
+            will enhance your abilities.
           </Typography>
           <br />
           {multiplierDescription}
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: `repeat(${faction.name === FactionName.ShadowsOfAnarchy ? "2" : "3"}, 1fr)`,
+              gridTemplateColumns: `repeat(${
+                faction.name === FactionName.ShadowsOfAnarchy ? "2" : "3"
+              }, 1fr)`,
               justifyItems: "center",
+              alignItems: "center",
               my: 1,
             }}
           >
             <>{multiplierComponent}</>
-            <Typography>
-              <b>Reputation:</b> <Reputation reputation={faction.playerReputation} />
-              <br />
-              <b>Favor:</b> <Favor favor={faction.favor} />
-            </Typography>
+
+            <Tooltip
+              title={
+                <>
+                  <Typography>
+                    You will have{" "}
+                    <Favor
+                      favor={addRepToFavor(
+                        faction.favor,
+                        faction.playerReputation
+                      )}
+                    />{" "}
+                    faction favor after installing an Augmentation.
+                  </Typography>
+                  <MathJax>
+                    {"\\(\\huge{r = \\text{total faction reputation}}\\)"}
+                  </MathJax>
+                  <MathJax>
+                    {
+                      "\\(\\huge{favor=\\log_{1.02}\\left(1+\\frac{r}{25000}\\right)}\\)"
+                    }
+                  </MathJax>
+                </>
+              }
+            >
+              <Typography>
+                <b>Reputation:</b>{" "}
+                <Reputation reputation={faction.playerReputation} />
+                <br />
+                <b>Favor:</b> <Favor favor={faction.favor} />
+              </Typography>
+            </Tooltip>
           </Box>
           <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
-            <Button onClick={() => switchSortOrder(PurchaseAugmentationsOrderSetting.Cost)}>Sort by Cost</Button>
-            <Button onClick={() => switchSortOrder(PurchaseAugmentationsOrderSetting.Reputation)}>
+            <Button
+              onClick={() =>
+                switchSortOrder(PurchaseAugmentationsOrderSetting.Cost)
+              }
+            >
+              Sort by Cost
+            </Button>
+            <Button
+              onClick={() =>
+                switchSortOrder(PurchaseAugmentationsOrderSetting.Reputation)
+              }
+            >
               Sort by Reputation
             </Button>
-            <Button onClick={() => switchSortOrder(PurchaseAugmentationsOrderSetting.Default)}>
+            <Button
+              onClick={() =>
+                switchSortOrder(PurchaseAugmentationsOrderSetting.Default)
+              }
+            >
               Sort by Default Order
             </Button>
-            <Button onClick={() => switchSortOrder(PurchaseAugmentationsOrderSetting.Purchasable)}>
+            <Button
+              onClick={() =>
+                switchSortOrder(PurchaseAugmentationsOrderSetting.Purchasable)
+              }
+            >
               Sort by Purchasable
             </Button>
           </Box>
