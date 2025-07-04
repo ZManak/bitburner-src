@@ -131,6 +131,10 @@ module.exports = (env, argv) => {
             to: "mathjax",
             context: "node_modules/mathjax-full/es5",
           },
+          {
+            from: path.resolve(__dirname, "src/audio"),
+            to: path.resolve(__dirname, "dist/audio"),
+          }
         ],
       }),
     ].filter(Boolean),
@@ -142,7 +146,7 @@ module.exports = (env, argv) => {
       assetModuleFilename: "assets/[hash][ext][query]",
     },
     module: {
-      rules: [
+      rules: [        
         {
           test: /\.(js$|jsx|ts|tsx)$/,
           exclude: /node_modules/,
@@ -155,7 +159,7 @@ module.exports = (env, argv) => {
             },
           },
         },
-        { test: /\.(ttf|woff2|png|jpe?g|gif|jp2|webp|svg)$/, type: "asset/resource" },
+        { test: /\.(ttf|woff2|png|jpe?g|gif|jp2|webp|svg|opus|mp3|wav)$/, type: "asset/resource" },
         {
           test: /\.s?css$/,
           use: ["style-loader", "css-loader"],

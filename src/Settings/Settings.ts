@@ -14,6 +14,7 @@ import {
 import { mergePlayerDefinedKeyBindings, type PlayerDefinedKeyBindingsType } from "../utils/KeyBindingUtils";
 import { toggleSuppressErrorModals } from "../ErrorHandling/ErrorState";
 
+
 /**
  * This function won't be able to catch **all** invalid hostnames. In order to validate a hostname properly, we need to
  * import a good validation library or write one by ourselves. Considering that we only need to catch common mistakes,
@@ -195,6 +196,10 @@ export const Settings = {
   KeyBindings: {} as PlayerDefinedKeyBindingsType,
   /** Whether to sync Steam achievements */
   SyncSteamAchievements: true,
+  /** Enable/disable SFX */
+  enableErrorSfx: true,
+  enableWarningSfx: true,
+  enableSuccessSfx: true,
 
   load(saveString: string) {
     const save: unknown = JSON.parse(saveString);

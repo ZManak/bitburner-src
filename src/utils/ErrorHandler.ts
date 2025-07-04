@@ -7,7 +7,7 @@ import { DisplayError } from "../ErrorHandling/DisplayError";
 
 /** Generate an error dialog when workerscript is known */
 export function handleUnknownError(e: unknown, ws: WorkerScript | null = null, initialText = "") {
-  if (e instanceof ScriptDeath) {
+    if (e instanceof ScriptDeath) {
     // No dialog for ScriptDeath
     return;
   }
@@ -57,7 +57,7 @@ export function handleUnknownError(e: unknown, ws: WorkerScript | null = null, i
      */
     console.error(e);
     const msg = getErrorMessageWithStackAndCause(e);
-    DisplayError(initialText + msg, getErrorType(e.stack) ?? "RUNTIME", ws?.scriptRef?.filename, ws?.hostname, ws?.pid);
+    DisplayError(initialText + msg, getErrorType(e.stack as string) ?? "RUNTIME", ws?.scriptRef?.filename, ws?.hostname, ws?.pid);
   } else if (typeof e !== "string") {
     console.error("Unexpected error:", e);
     const msg = `Unexpected type of error thrown. This error was likely thrown manually within a script.

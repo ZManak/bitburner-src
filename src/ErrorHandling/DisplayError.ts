@@ -1,6 +1,7 @@
 import { Router } from "../ui/GameRoot";
 import { SimplePage } from "@enums";
 import { errorModalsAreSuppressed, ErrorRecord, ErrorState } from "./ErrorState";
+import { AudioHandler } from "../audioHandler";
 
 let currentId = 0;
 
@@ -58,5 +59,6 @@ function updateActiveError(error: ErrorRecord): void {
   if (!ErrorState.ActiveError && !errorModalsAreSuppressed()) {
     ErrorState.ActiveError = error;
     ErrorState.ErrorUpdate.emit(ErrorState.ActiveError);
+    AudioHandler.playError;
   }
 }

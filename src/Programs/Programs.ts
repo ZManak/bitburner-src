@@ -14,6 +14,7 @@ import { CompletedProgramName, FactionName } from "@enums";
 import { Router } from "../ui/GameRoot";
 import { Page } from "../ui/Router";
 import { knowAboutBitverse } from "../BitNode/BitNodeUtils";
+import { AudioHandler } from "../audioHandler";
 
 function requireHackingLevel(lvl: number) {
   return function () {
@@ -39,21 +40,25 @@ export const Programs: Record<CompletedProgramName, Program> = {
     run: (_args: string[], server: BaseServer): void => {
       if (!(server instanceof Server)) {
         Terminal.error("Cannot nuke this kind of server.");
+        AudioHandler.playError;
         return;
       }
       if (server.hasAdminRights) {
         Terminal.print("You already have root access to this computer. There is no reason to run NUKE.exe");
-        Terminal.print("You can now run scripts on this server.");
+        Terminal.success("You can now run scripts on this server.")
+        AudioHandler.playSuccess;
         return;
       }
       if (server.openPortCount >= server.numOpenPortsRequired) {
         server.hasAdminRights = true;
-        Terminal.print("NUKE successful! Gained root access to " + server.hostname);
-        Terminal.print("You can now run scripts on this server.");
+        Terminal.success("NUKE successful! Gained root access to " + server.hostname);
+        Terminal.success("You can now run scripts on this server.");
+        AudioHandler.playSuccess
         return;
       }
 
-      Terminal.print("NUKE unsuccessful. Not enough ports have been opened");
+      Terminal.error("NUKE unsuccessful. Not enough ports have been opened");
+      AudioHandler.playError;
     },
   }),
   [CompletedProgramName.bruteSsh]: new Program({
