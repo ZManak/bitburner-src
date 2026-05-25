@@ -1448,19 +1448,14 @@ export const ns: InternalAPI<NSFull> = {
     const sourcePath = helpers.filePath(ctx, "source", _source);
     const destinationPath = helpers.filePath(ctx, "destination", _destination);
 
-    if (!hasTextExtension(sourcePath) && !hasScriptExtension(sourcePath)) {
-      helpers.log(
+    if (
+      (!hasTextExtension(sourcePath) && !hasScriptExtension(sourcePath)) ||
+      (!hasTextExtension(destinationPath) && !hasScriptExtension(destinationPath))
+    ) {
+      throw helpers.errorMessage(
         ctx,
-        () => `WARNING: 'mv' can only move scripts (.js, .jsx, .ts, .tsx) and text files (.txt, .json, .css). Skipping ${sourcePath}.`,
+        `'mv' can only be used on scripts (.js, .jsx, .ts, .tsx) and text files (.txt, .json, .css)`,
       );
-      return;
-    }
-    if (!hasTextExtension(destinationPath) && !hasScriptExtension(destinationPath)) {
-      helpers.log(
-        ctx,
-        () => `WARNING: 'mv' destination must be a script or text file. Cannot move ${sourcePath} to ${destinationPath}.`,
-      );
-      return;
     }
     if (sourcePath === destinationPath) {
       helpers.log(ctx, () => "WARNING: Did nothing, source and destination paths were the same.");
