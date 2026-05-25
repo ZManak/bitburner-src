@@ -15,11 +15,11 @@ export function mv(args: (string | number | boolean)[], server: BaseServer): voi
   const destinationPath = Terminal.getFilepath(destination);
   if (!destinationPath) return Terminal.error(`Invalid destination filename: ${destinationPath}`);
 
-  if (
-    (!hasScriptExtension(sourcePath) && !hasTextExtension(sourcePath)) ||
-    (!hasScriptExtension(destinationPath) && !hasTextExtension(destinationPath))
-  ) {
-    return Terminal.error(`'mv' can only be used on scripts (.js, .jsx, .ts, .tsx) and text files (.txt, .json, .css)`);
+  if (!hasScriptExtension(sourcePath) && !hasTextExtension(sourcePath)) {
+    return Terminal.warn(`'mv' can only move scripts (.js, .jsx, .ts, .tsx) and text files (.txt, .json, .css). Skipping ${source}.`);
+  }
+  if (!hasScriptExtension(destinationPath) && !hasTextExtension(destinationPath)) {
+    return Terminal.warn(`'mv' destination must be a script or text file. Cannot move ${source} to ${destination}.`);
   }
 
   // Allow content to be moved between scripts and textfiles, no need to limit this.
